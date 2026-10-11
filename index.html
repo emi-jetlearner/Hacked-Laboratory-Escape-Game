@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ANOMALY: LAB LOCKDOWN — A high-security hacker escape room game. Solve puzzles, restore research data, and override facility lockdown.">
+  <title>ANOMALY: LAB LOCKDOWN // Security Terminal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Audio & Scanline Overlay -->
+  <div class="crt-overlay" aria-hidden="true"></div>
+  <div class="grid-background" aria-hidden="true"></div>
+
+  <!-- Audio Control Button (Pure Web Audio API synthesizers, optional/toggleable) -->
+  <button id="soundToggle" class="sound-toggle" aria-label="Toggle synthetic sound effects" title="Audio Synthesizer (Mute/Unmute)">
+    <span class="sound-icon" id="soundIcon">🔊</span>
+    <span class="sound-label">AUDIO: ON</span>
+  </button>
+
+  <!-- =========================================================
+       1. MAIN MENU / OPENING SCREEN
+       ========================================================= -->
+  <section id="mainMenu" class="screen main-menu-screen active" aria-labelledby="gameTitle">
+    <div class="menu-container">
+      <div class="lockdown-banner" role="alert">
+        <span class="warning-triangle">⚠️</span>
+        <span class="blink-fast">CRITICAL ALERT: CODE RED — FACILITY LOCKDOWN ACTIVE</span>
+        <span class="warning-triangle">⚠️</span>
+      </div>
+
+      <header class="title-header">
+        <div class="glitch-wrapper">
+          <h1 id="gameTitle" class="glitch-title" data-text="ANOMALY: LAB LOCKDOWN">ANOMALY: LAB LOCKDOWN</h1>
+        </div>
+        <p class="subtitle">“The truth is buried in the system.”</p>
+      </header>
+
+      <div class="story-dossier panel">
+        <div class="panel-header">
+          <span class="panel-dot red"></span>
+          <span class="panel-dot yellow"></span>
+          <span class="panel-dot green"></span>
+          <span class="panel-title">INCIDENT DOSSIER // LOG-884-Ω</span>
+        </div>
+        <div class="dossier-body">
+          <p class="story-line highlight-story">
+            <strong>TIMESTAMP:</strong> 03:42:19 UTC — SECTOR 7 ENERGY LAB
+          </p>
+          <p class="story-line">
+            You are trapped inside the subterranean Quantum Dynamics facility. Lead researcher Dr. Elena Vance recently achieved what was thought impossible: a stable prototype generating near-limitless zero-emission clean energy.
+          </p>
+          <p class="story-line">
+            Ten minutes ago, a malicious intrusion compromised the central mainframe. The research archives were cipher-locked, the containment fields destabilized, and an automated lockdown was initiated.
+          </p>
+          <p class="story-line warning-text">
+            <strong>MISSION DIRECTIVE:</strong> Investigate the lab, bypass corrupted subsystems, restore Elena’s research data, and override the lockdown protocols before the facility permanently seals all oxygen scrubbers.
+          </p>
+        </div>
+      </div>
+
+      <div class="menu-actions">
+        <button id="initSystemBtn" class="btn btn-primary btn-glow" type="button">
+          <span class="btn-bracket">[</span>
+          <span class="btn-text">INITIALIZE SYSTEM</span>
+          <span class="btn-bracket">]</span>
+        </button>
+      </div>
+
+      <footer class="menu-footer">
+        <span>SECURITY LEVEL: APEX</span>
+        <span>•</span>
+        <span>NEURAL LINK: STANDBY</span>
+        <span>•</span>
+        <span>VANILLA JS ARCHITECTURE</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       2. MAIN LABORATORY INTERFACE
+       ========================================================= -->
+  <main id="gameInterface" class="screen game-interface-screen" aria-label="Laboratory Command Interface">
+    <!-- Top System Header Bar -->
+    <header class="system-topbar">
+      <div class="topbar-left">
+        <span class="sys-badge">SYS: ONLINE</span>
+        <span class="topbar-title">ANOMALY // LAB INTERFACE</span>
+      </div>
+      <div class="topbar-center">
+        <div class="progress-container" title="Overall Mission Completion">
+          <span class="progress-label">MISSION PROGRESS: <strong id="progressPercent">0%</strong></span>
+          <div class="progress-bar-track">
+            <div id="missionProgressBar" class="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span id="lockdownStatusBadge" class="status-pill status-pill-danger">LOCKDOWN: ENGAGED</span>
+      </div>
+    </header>
+
+    <!-- Main Game Grid Layout -->
+    <div class="game-layout">
+      
+      <!-- LEFT COLUMN: Laboratory Visualization & Status -->
+      <section class="left-column" aria-label="Facility Visualization and Telemetry">
+        
+        <!-- Lab Visualization Panel -->
+        <article class="panel lab-visual-panel">
+          <div class="panel-header">
+            <div class="panel-tags">
+              <span class="status-indicator-light"></span>
+              <span class="panel-title">SECTOR 7 FACILITY TELEMETRY</span>
+            </div>
+            <span class="panel-subtext">CLICK ANY UNIT TO INSPECT</span>
+          </div>
+
+          <div class="lab-viewport" id="labViewport">
+            <!-- Background Lab Wireframe SVG -->
+            <svg class="lab-scene-svg" viewBox="0 0 800 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <linearGradient id="reactorGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.8" id="reactorGrad0"/>
+                  <stop offset="100%" stop-color="#330011" stop-opacity="0.3" id="reactorGrad1"/>
+                </linearGradient>
+                <linearGradient id="serverGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.6"/>
+                  <stop offset="100%" stop-color="#002233" stop-opacity="0.2"/>
+                </linearGradient>
+                <pattern id="hexGrid" width="24" height="24" patternUnits="userSpaceOnUse">
+                  <path d="M12 0 L24 6.9 L24 20.7 L12 27.6 L0 20.7 L0 6.9 Z" fill="none" stroke="rgba(0, 240, 255, 0.05)" stroke-width="1"/>
+                </pattern>
+              </defs>
+
+              <!-- Floor & Background Geometry -->
+              <rect width="800" height="360" fill="url(#hexGrid)" />
+              <path d="M 0 300 L 800 300" stroke="#00f0ff" stroke-opacity="0.2" stroke-width="1" />
+              <path d="M 0 320 L 800 320" stroke="#00f0ff" stroke-opacity="0.3" stroke-width="1.5" />
+              <path d="M 100 300 L 0 360 M 300 300 L 220 360 M 500 300 L 580 360 M 700 300 L 800 360" stroke="#00f0ff" stroke-opacity="0.15" stroke-dasharray="4,4"/>
+              
+              <!-- Conduit Pipes connecting units -->
+              <path d="M 170 190 H 380 V 190 H 620" fill="none" stroke="#00f0ff" stroke-opacity="0.25" stroke-width="3" stroke-dasharray="8,6" class="data-cable"/>
+              
+              <!-- Containment Vault Outline -->
+              <rect x="30" y="25" width="740" height="260" rx="8" fill="none" stroke="rgba(0, 240, 255, 0.15)" stroke-width="1.5"/>
+              <text x="40" y="48" fill="rgba(0, 240, 255, 0.4)" font-family="monospace" font-size="11" letter-spacing="2">CONTAINMENT FIELD // ZONE-09</text>
+            </svg>
+
+            <!-- Interactive Station 1: Energy Reactor -->
+            <div id="stationReactor" class="lab-station station-reactor" role="button" tabindex="0" aria-label="Energy Reactor Unit: Unsolved" data-target="reactor">
+              <div class="station-visual">
+                <div class="reactor-core" id="reactorCoreVisual">
+                  <div class="core-rings ring-1"></div>
+                  <div class="core-rings ring-2"></div>
+                  <div class="core-plasma" id="reactorPlasma"></div>
+                </div>
+                <div class="station-pedestal"></div>
+              </div>
+              <div class="station-info">
+                <div class="station-status-dot unsolved" id="dotReactor" title="Status: Unsolved"></div>
+                <span class="station-title">ENERGY REACTOR</span>
+                <span class="station-sub" id="labelReactor">CRITICAL // OFFLINE</span>
+              </div>
+            </div>
+
+            <!-- Interactive Station 2: Research Data Core -->
+            <div id="stationServer" class="lab-station station-server" role="button" tabindex="0" aria-label="Research Data Core: Unsolved" data-target="server">
+              <div class="station-visual">
+                <div class="server-rack" id="serverRackVisual">
+                  <div class="rack-unit u1"><span class="led red"></span><span class="led-bar"></span></div>
+                  <div class="rack-unit u2"><span class="led red"></span><span class="led-bar"></span></div>
+                  <div class="rack-unit u3"><span class="led red"></span><span class="led-bar"></span></div>
+                  <div class="rack-unit u4"><span class="led red"></span><span class="led-bar"></span></div>
+                  <div class="rack-unit u5"><span class="led red"></span><span class="led-bar"></span></div>
+                </div>
+                <div class="station-pedestal"></div>
+              </div>
+              <div class="station-info">
+                <div class="station-status-dot unsolved" id="dotServer" title="Status: Unsolved"></div>
+                <span class="station-title">RESEARCH DATA CORE</span>
+                <span class="station-sub" id="labelServer">FILES ENCRYPTED</span>
+              </div>
+            </div>
+
+            <!-- Interactive Station 3: Control Console -->
+            <div id="stationConsole" class="lab-station station-console" role="button" tabindex="0" aria-label="Control Console: Unsolved" data-target="console">
+              <div class="station-visual">
+                <div class="console-deck" id="consoleDeckVisual">
+                  <div class="console-screen-angled">
+                    <div class="terminal-mini-lines">
+                      <span></span><span></span><span></span>
+                    </div>
+                  </div>
+                  <div class="console-keyboard"></div>
+                </div>
+                <div class="station-pedestal"></div>
+              </div>
+              <div class="station-info">
+                <div class="station-status-dot unsolved" id="dotConsole" title="Status: Unsolved"></div>
+                <span class="station-title">CONTROL CONSOLE</span>
+                <span class="station-sub" id="labelConsole">LOCKDOWN ENGAGED</span>
+              </div>
+            </div>
+
+          </div>
+        </article>
+
+        <!-- System Status Panel -->
+        <article class="panel status-panel" aria-label="System Diagnostics">
+          <div class="panel-header">
+            <span class="panel-title">SYSTEM DIAGNOSTICS & TELEMETRY</span>
+            <span class="badge-mini" id="puzzleCountBadge">PUZZLES: 0/3</span>
+          </div>
+          <div class="status-grid">
+            <div class="status-card">
+              <div class="status-card-header">
+                <span class="status-card-label">LOCKDOWN PROTOCOL</span>
+                <span class="metric-indicator danger" id="metricLockdownLed">●</span>
+              </div>
+              <div class="status-card-value danger" id="metricLockdown">SEALED (LVL 5)</div>
+              <div class="status-card-sub" id="metricLockdownSub">Blast doors engaged</div>
+            </div>
+
+            <div class="status-card">
+              <div class="status-card-header">
+                <span class="status-card-label">RESEARCH INTEGRITY</span>
+                <span class="metric-indicator danger" id="metricDataLed">●</span>
+              </div>
+              <div class="status-card-value danger" id="metricData">14% (CORRUPTED)</div>
+              <div class="status-card-sub" id="metricDataSub">Quantum files ciphered</div>
+            </div>
+
+            <div class="status-card">
+              <div class="status-card-header">
+                <span class="status-card-label">REACTOR CORE STATUS</span>
+                <span class="metric-indicator danger" id="metricReactorLed">●</span>
+              </div>
+              <div class="status-card-value danger" id="metricReactor">0.0 GW (OFFLINE)</div>
+              <div class="status-card-sub" id="metricReactorSub">Zero-point flux collapsed</div>
+            </div>
+
+            <div class="status-card">
+              <div class="status-card-header">
+                <span class="status-card-label">SYSTEM ANOMALIES</span>
+                <span class="metric-indicator info" id="metricAnomalyLed">●</span>
+              </div>
+              <div class="status-card-value warning" id="metricAnomaly">SCAN REQUIRED</div>
+              <div class="status-card-sub" id="metricAnomalySub">Type 'scan' in terminal</div>
+            </div>
+          </div>
+        </article>
+
+      </section>
+
+      <!-- RIGHT COLUMN: Interactive Terminal & Command Reference -->
+      <section class="right-column" aria-label="Terminal Console and Manual">
+        
+        <!-- Interactive Terminal Panel -->
+        <article class="panel terminal-panel" aria-label="Command Terminal">
+          <div class="panel-header terminal-header">
+            <div class="terminal-dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <span class="panel-title terminal-title">LAB_OS // TTY-PRIMARY [BASH-V3.8]</span>
+            <button id="clearTermBtn" class="term-clear-btn" type="button" title="Clear screen">CLEAR</button>
+          </div>
+
+          <!-- Terminal Output Feed -->
+          <div id="terminalOutput" class="terminal-output" role="log" aria-live="polite">
+            <!-- Initial boot log messages populated by script.js -->
+          </div>
+
+          <!-- Command Input Row -->
+          <form id="terminalForm" class="terminal-form" autocomplete="off" action="#">
+            <label for="commandInput" class="term-prompt">
+              <span class="prompt-user">root@anomaly</span>:<span class="prompt-path">~/lab</span>#
+            </label>
+            <div class="input-wrapper">
+              <input 
+                type="text" 
+                id="commandInput" 
+                class="command-input" 
+                placeholder="type 'help' or 'scan' to begin..." 
+                spellcheck="false" 
+                autocomplete="off" 
+                autocorrect="off" 
+                autocapitalize="off"
+                aria-label="Terminal command input"
+              />
+              <span class="terminal-cursor" aria-hidden="true">█</span>
+            </div>
+            <button type="submit" id="submitCommandBtn" class="btn btn-submit" aria-label="Send command">
+              EXECUTE ↵
+            </button>
+          </form>
+        </article>
+
+        <!-- Command Help Reference Panel -->
+        <article class="panel help-panel" aria-label="Command Help Reference">
+          <div class="panel-header">
+            <span class="panel-title">OPERATING COMMAND DIRECTORY</span>
+            <span class="panel-subtext">Click any to auto-fill</span>
+          </div>
+          <div class="help-scroll-container">
+            <table class="help-table">
+              <thead>
+                <tr>
+                  <th scope="col">Command</th>
+                  <th scope="col">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="quick-cmd-row" data-cmd="scan">
+                  <td><code>scan</code></td>
+                  <td>Sweep laboratory sensors for corrupted nodes & clues</td>
+                </tr>
+                <tr class="quick-cmd-row" data-cmd="inspect reactor">
+                  <td><code>inspect reactor</code></td>
+                  <td>Analyze the clean-energy prototype containment unit</td>
+                </tr>
+                <tr class="quick-cmd-row" data-cmd="inspect server">
+                  <td><code>inspect server</code></td>
+                  <td>Investigate the research data core encrypted storage</td>
+                </tr>
+                <tr class="quick-cmd-row" data-cmd="inspect console">
+                  <td><code>inspect console</code></td>
+                  <td>Examine the central security override control console</td>
+                </tr>
+                <tr class="quick-cmd-row" data-cmd="solve reactor ">
+                  <td><code>solve reactor [ans]</code></td>
+                  <td>Submit power equation calculation (e.g. <code>solve reactor 96</code>)</td>
+                </tr>
+                <tr class="quick-cmd-row" data-cmd="solve server ">
+                  <td><code>solve server [ans]</code></td>
+                  <td>Submit cryptographic key phrase to unlock research files</td>
+                </tr>
+                <tr class="quick-cmd-row" data-cmd="solve console ">
+                  <td><code>solve console [ans]</code></td>
+                  <td>Submit final authorization code to release lockdown</td>
+                </tr>
+                <tr class="quick-cmd-row" data-cmd="status">
+                  <td><code>status</code></td>
+                  <td>Print comprehensive diagnostic readout in terminal</td>
+                </tr>
+                <tr class="quick-cmd-row" data-cmd="help">
+                  <td><code>help</code></td>
+                  <td>Print standard protocol instructions to terminal</td>
+                </tr>
+                <tr class="quick-cmd-row" data-cmd="clear">
+                  <td><code>clear</code></td>
+                  <td>Clear the terminal screen buffer</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- =========================================================
+       3. VICTORY SEQUENCE MODAL / OVERLAY
+       ========================================================= -->
+  <aside id="victoryModal" class="victory-modal" role="dialog" aria-modal="true" aria-labelledby="victoryTitle" hidden>
+    <div class="victory-backdrop"></div>
+    <div class="victory-card panel panel-glow-green">
+      
+      <div class="victory-header">
+        <div class="victory-badge">ACCESS RESTORED // CODE ZERO</div>
+        <h2 id="victoryTitle" class="victory-title">MISSION COMPLETE</h2>
+        <div class="victory-divider"></div>
+      </div>
+
+      <div class="victory-content">
+        <ul class="victory-bullet-list">
+          <li class="victory-bullet">
+            <span class="icon-check">✓</span>
+            <div class="bullet-text">
+              <strong>Laboratory lockdown disengaged.</strong>
+              <span>Emergency blast doors unlocked. Atmospheric regulation stabilized.</span>
+            </div>
+          </li>
+          <li class="victory-bullet">
+            <span class="icon-check">✓</span>
+            <div class="bullet-text">
+              <strong>Research data integrity restored.</strong>
+              <span>Elena Vance's clean energy patent files reconstructed (100% verified).</span>
+            </div>
+          </li>
+          <li class="victory-bullet">
+            <span class="icon-check">✓</span>
+            <div class="bullet-text">
+              <strong>Clean-energy discovery secured.</strong>
+              <span>Quantum reactor operational at 12.8 GW output. Zero-emission grid active.</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="intruder-warning-box">
+          <div class="intruder-header">
+            <span class="blink-fast">⚠️ FORENSIC TELEMETRY WARNING</span>
+          </div>
+          <p class="intruder-body">
+            “Intrusion signature traced to IP proxy [CLASSIFIED]. Intruder connection severed, but remote backdoor logs indicate the syndicate has not given up. Stay vigilant, agent.”
+          </p>
+        </div>
+      </div>
+
+      <div class="victory-actions">
+        <button id="restartMissionBtn" class="btn btn-restart" type="button">
+          <span class="btn-bracket">[</span>
+          <span class="btn-text">RESTART MISSION</span>
+          <span class="btn-bracket">]</span>
+        </button>
+      </div>
+
+    </div>
+  </aside>
+
+  <script src="script.js"></script>
+</body>
+</html>
