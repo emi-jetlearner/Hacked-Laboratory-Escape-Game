@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="ANOMALY: LAB LOCKDOWN — A high-security hacker escape room game. Solve puzzles, restore research data, and override facility lockdown.">
-  <title>ANOMALY: LAB LOCKDOWN // Security Terminal</title>
+  <title>Hacked Laboratory Escape Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -33,7 +33,6 @@
         <div class="glitch-wrapper">
           <h1 id="gameTitle" class="glitch-title" data-text="ANOMALY: LAB LOCKDOWN">ANOMALY: LAB LOCKDOWN</h1>
         </div>
-        <p class="subtitle">“The truth is buried in the system.”</p>
       </header>
 
       <div class="story-dossier panel">
@@ -44,17 +43,14 @@
           <span class="panel-title">INCIDENT DOSSIER // LOG-884-Ω</span>
         </div>
         <div class="dossier-body">
-          <p class="story-line highlight-story">
-            <strong>TIMESTAMP:</strong> 03:42:19 UTC — SECTOR 7 ENERGY LAB
+          <p class="story-line">
+            You completed an experiment that could change the future of humanity or ruin it, if your findings became public. Your research team has uncovered a way to generate clean, nearly limitless energy.
           </p>
           <p class="story-line">
-            You are trapped inside the subterranean Quantum Dynamics facility. Lead researcher Dr. Elena Vance recently achieved what was thought impossible: a stable prototype generating near-limitless zero-emission clean energy.
-          </p>
-          <p class="story-line">
-            Ten minutes ago, a malicious intrusion compromised the central mainframe. The research archives were cipher-locked, the containment fields destabilized, and an automated lockdown was initiated.
+            Then every monitor in the lab went black. Someone breached your security network, exposed your research files, and locked down the facility. Your discovery is still here — but it could fall into the hands of someone with very bad intentions.
           </p>
           <p class="story-line warning-text">
-            <strong>MISSION DIRECTIVE:</strong> Investigate the lab, bypass corrupted subsystems, restore Elena’s research data, and override the lockdown protocols before the facility permanently seals all oxygen scrubbers.
+            <strong>MISSION DIRECTIVE:</strong> Investigate the lab, bypass corrupted subsystems, secure the research data, and override the lockdown protocols before the facility permanently shuts down and all of your hard work goes to waste.
           </p>
         </div>
       </div>
@@ -62,18 +58,10 @@
       <div class="menu-actions">
         <button id="initSystemBtn" class="btn btn-primary btn-glow" type="button">
           <span class="btn-bracket">[</span>
-          <span class="btn-text">INITIALIZE SYSTEM</span>
+          <span class="btn-text">Initialize Data Recovery Protocol</span>
           <span class="btn-bracket">]</span>
         </button>
       </div>
-
-      <footer class="menu-footer">
-        <span>SECURITY LEVEL: APEX</span>
-        <span>•</span>
-        <span>NEURAL LINK: STANDBY</span>
-        <span>•</span>
-        <span>VANILLA JS ARCHITECTURE</span>
-      </footer>
     </div>
   </section>
 
@@ -103,56 +91,94 @@
     <!-- Main Game Grid Layout -->
     <div class="game-layout">
       
-      <!-- LEFT COLUMN: Laboratory Visualization & Status -->
-      <section class="left-column" aria-label="Facility Visualization and Telemetry">
+      <!-- LEFT COLUMN: Laboratory Visualization -->
+      <section class="left-column" aria-label="Laboratory Visuals">
         
         <!-- Lab Visualization Panel -->
         <article class="panel lab-visual-panel">
           <div class="panel-header">
             <div class="panel-tags">
               <span class="status-indicator-light"></span>
-              <span class="panel-title">SECTOR 7 FACILITY TELEMETRY</span>
+              <span class="panel-title">LAB STATUS</span>
             </div>
-            <span class="panel-subtext">CLICK ANY UNIT TO INSPECT</span>
+            <span class="panel-subtext">Click a device to inspect it, or type a command below.</span>
           </div>
 
           <div class="lab-viewport" id="labViewport">
-            <!-- Background Lab Wireframe SVG -->
+            <!-- Background Lab Wireframe SVG with Perspective & Depth -->
             <svg class="lab-scene-svg" viewBox="0 0 800 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
               <defs>
-                <linearGradient id="reactorGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.8" id="reactorGrad0"/>
-                  <stop offset="100%" stop-color="#330011" stop-opacity="0.3" id="reactorGrad1"/>
+                <radialGradient id="labCeilingLight" cx="50%" cy="0%" r="70%">
+                  <stop offset="0%" stop-color="#4d62cd" stop-opacity="0.35"/>
+                  <stop offset="60%" stop-color="#241442" stop-opacity="0.1"/>
+                  <stop offset="100%" stop-color="#050811" stop-opacity="0"/>
+                </radialGradient>
+                <linearGradient id="wallGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#0b1020"/>
+                  <stop offset="60%" stop-color="#070a14"/>
+                  <stop offset="100%" stop-color="#04060c"/>
                 </linearGradient>
-                <linearGradient id="serverGlow" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.6"/>
-                  <stop offset="100%" stop-color="#002233" stop-opacity="0.2"/>
+                <linearGradient id="floorGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#0a1228"/>
+                  <stop offset="100%" stop-color="#020408"/>
                 </linearGradient>
-                <pattern id="hexGrid" width="24" height="24" patternUnits="userSpaceOnUse">
-                  <path d="M12 0 L24 6.9 L24 20.7 L12 27.6 L0 20.7 L0 6.9 Z" fill="none" stroke="rgba(0, 240, 255, 0.05)" stroke-width="1"/>
+                <pattern id="hexGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+                  <path d="M16 0 L32 9.2 L32 27.6 L16 36.8 L0 27.6 L0 9.2 Z" fill="none" stroke="rgba(56, 125, 255, 0.08)" stroke-width="1"/>
                 </pattern>
+                <radialGradient id="reactorFloorReflection" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ff2244" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="#ff2244" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="serverFloorReflection" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#2a75d3" stop-opacity="0.2"/>
+                  <stop offset="100%" stop-color="#2a75d3" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="consoleFloorReflection" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#9933ff" stop-opacity="0.2"/>
+                  <stop offset="100%" stop-color="#9933ff" stop-opacity="0"/>
+                </radialGradient>
               </defs>
 
-              <!-- Floor & Background Geometry -->
-              <rect width="800" height="360" fill="url(#hexGrid)" />
-              <path d="M 0 300 L 800 300" stroke="#00f0ff" stroke-opacity="0.2" stroke-width="1" />
-              <path d="M 0 320 L 800 320" stroke="#00f0ff" stroke-opacity="0.3" stroke-width="1.5" />
-              <path d="M 100 300 L 0 360 M 300 300 L 220 360 M 500 300 L 580 360 M 700 300 L 800 360" stroke="#00f0ff" stroke-opacity="0.15" stroke-dasharray="4,4"/>
-              
-              <!-- Conduit Pipes connecting units -->
-              <path d="M 170 190 H 380 V 190 H 620" fill="none" stroke="#00f0ff" stroke-opacity="0.25" stroke-width="3" stroke-dasharray="8,6" class="data-cable"/>
-              
-              <!-- Containment Vault Outline -->
-              <rect x="30" y="25" width="740" height="260" rx="8" fill="none" stroke="rgba(0, 240, 255, 0.15)" stroke-width="1.5"/>
-              <text x="40" y="48" fill="rgba(0, 240, 255, 0.4)" font-family="monospace" font-size="11" letter-spacing="2">CONTAINMENT FIELD // ZONE-09</text>
+              <!-- Back Wall & Ambient Spotlight -->
+              <rect width="800" height="260" fill="url(#wallGradient)" />
+              <rect width="800" height="260" fill="url(#hexGrid)" />
+              <rect width="800" height="260" fill="url(#labCeilingLight)" />
+
+              <!-- Laboratory Structural Pillars & Depth Shadows -->
+              <path d="M 0 0 L 120 260 M 800 0 L 680 260" stroke="#1c2b50" stroke-width="2"/>
+              <line x1="0" y1="260" x2="800" y2="260" stroke="#3b6ee8" stroke-opacity="0.35" stroke-width="2"/>
+
+              <!-- Depth Perspective Floor Grid -->
+              <polygon points="0,260 800,260 800,360 0,360" fill="url(#floorGradient)"/>
+              <line x1="0" y1="285" x2="800" y2="285" stroke="#3b6ee8" stroke-opacity="0.15" stroke-width="1"/>
+              <line x1="0" y1="315" x2="800" y2="315" stroke="#3b6ee8" stroke-opacity="0.2" stroke-width="1.5"/>
+              <line x1="0" y1="345" x2="800" y2="345" stroke="#3b6ee8" stroke-opacity="0.25" stroke-width="2"/>
+
+              <!-- Floor Perspective Vanishing Rays -->
+              <line x1="120" y1="260" x2="40" y2="360" stroke="#3b6ee8" stroke-opacity="0.2" stroke-width="1"/>
+              <line x1="260" y1="260" x2="210" y2="360" stroke="#3b6ee8" stroke-opacity="0.15" stroke-width="1"/>
+              <line x1="400" y1="260" x2="400" y2="360" stroke="#3b6ee8" stroke-opacity="0.25" stroke-width="1.5"/>
+              <line x1="540" y1="260" x2="590" y2="360" stroke="#3b6ee8" stroke-opacity="0.15" stroke-width="1"/>
+              <line x1="680" y1="260" x2="760" y2="360" stroke="#3b6ee8" stroke-opacity="0.2" stroke-width="1"/>
+
+              <!-- Ground Reflections beneath stations -->
+              <ellipse cx="140" cy="310" rx="90" ry="25" fill="url(#reactorFloorReflection)"/>
+              <ellipse cx="400" cy="310" rx="80" ry="20" fill="url(#serverFloorReflection)"/>
+              <ellipse cx="660" cy="310" rx="85" ry="22" fill="url(#consoleFloorReflection)"/>
+
+              <!-- Depth Conduit Cables -->
+              <path d="M 140 270 Q 270 290 400 270 T 660 270" fill="none" stroke="#253e7a" stroke-width="4"/>
+              <path d="M 140 270 Q 270 290 400 270 T 660 270" fill="none" stroke="#5d88ff" stroke-width="1.5" stroke-dasharray="6,8"/>
             </svg>
 
             <!-- Interactive Station 1: Energy Reactor -->
             <div id="stationReactor" class="lab-station station-reactor" role="button" tabindex="0" aria-label="Energy Reactor Unit: Unsolved" data-target="reactor">
               <div class="station-visual">
                 <div class="reactor-core" id="reactorCoreVisual">
+                  <div class="reactor-housing"></div>
                   <div class="core-rings ring-1"></div>
                   <div class="core-rings ring-2"></div>
+                  <div class="core-rings ring-3"></div>
                   <div class="core-plasma" id="reactorPlasma"></div>
                 </div>
                 <div class="station-pedestal"></div>
@@ -160,25 +186,25 @@
               <div class="station-info">
                 <div class="station-status-dot unsolved" id="dotReactor" title="Status: Unsolved"></div>
                 <span class="station-title">ENERGY REACTOR</span>
-                <span class="station-sub" id="labelReactor">CRITICAL // OFFLINE</span>
+                <span class="station-sub" id="labelReactor">OFFLINE // LOCKED</span>
               </div>
             </div>
 
-            <!-- Interactive Station 2: Research Data Core -->
-            <div id="stationServer" class="lab-station station-server" role="button" tabindex="0" aria-label="Research Data Core: Unsolved" data-target="server">
+            <!-- Interactive Station 2: Research Server -->
+            <div id="stationServer" class="lab-station station-server" role="button" tabindex="0" aria-label="Research Server: Unsolved" data-target="server">
               <div class="station-visual">
                 <div class="server-rack" id="serverRackVisual">
-                  <div class="rack-unit u1"><span class="led red"></span><span class="led-bar"></span></div>
-                  <div class="rack-unit u2"><span class="led red"></span><span class="led-bar"></span></div>
-                  <div class="rack-unit u3"><span class="led red"></span><span class="led-bar"></span></div>
-                  <div class="rack-unit u4"><span class="led red"></span><span class="led-bar"></span></div>
-                  <div class="rack-unit u5"><span class="led red"></span><span class="led-bar"></span></div>
+                  <div class="rack-unit u1"><span class="led red"></span><span class="led-bar"></span><span class="vent-strip"></span></div>
+                  <div class="rack-unit u2"><span class="led red"></span><span class="led-bar"></span><span class="vent-strip"></span></div>
+                  <div class="rack-unit u3"><span class="led red"></span><span class="led-bar"></span><span class="vent-strip"></span></div>
+                  <div class="rack-unit u4"><span class="led red"></span><span class="led-bar"></span><span class="vent-strip"></span></div>
+                  <div class="rack-unit u5"><span class="led red"></span><span class="led-bar"></span><span class="vent-strip"></span></div>
                 </div>
                 <div class="station-pedestal"></div>
               </div>
               <div class="station-info">
                 <div class="station-status-dot unsolved" id="dotServer" title="Status: Unsolved"></div>
-                <span class="station-title">RESEARCH DATA CORE</span>
+                <span class="station-title">RESEARCH SERVER</span>
                 <span class="station-sub" id="labelServer">FILES ENCRYPTED</span>
               </div>
             </div>
@@ -192,6 +218,9 @@
                       <span></span><span></span><span></span>
                     </div>
                   </div>
+                  <div class="console-keypad-row">
+                    <span class="btn-dot"></span><span class="btn-dot"></span><span class="btn-dot"></span>
+                  </div>
                   <div class="console-keyboard"></div>
                 </div>
                 <div class="station-pedestal"></div>
@@ -199,55 +228,10 @@
               <div class="station-info">
                 <div class="station-status-dot unsolved" id="dotConsole" title="Status: Unsolved"></div>
                 <span class="station-title">CONTROL CONSOLE</span>
-                <span class="station-sub" id="labelConsole">LOCKDOWN ENGAGED</span>
+                <span class="station-sub" id="labelConsole">LOCKDOWN ACTIVE</span>
               </div>
             </div>
 
-          </div>
-        </article>
-
-        <!-- System Status Panel -->
-        <article class="panel status-panel" aria-label="System Diagnostics">
-          <div class="panel-header">
-            <span class="panel-title">SYSTEM DIAGNOSTICS & TELEMETRY</span>
-            <span class="badge-mini" id="puzzleCountBadge">PUZZLES: 0/3</span>
-          </div>
-          <div class="status-grid">
-            <div class="status-card">
-              <div class="status-card-header">
-                <span class="status-card-label">LOCKDOWN PROTOCOL</span>
-                <span class="metric-indicator danger" id="metricLockdownLed">●</span>
-              </div>
-              <div class="status-card-value danger" id="metricLockdown">SEALED (LVL 5)</div>
-              <div class="status-card-sub" id="metricLockdownSub">Blast doors engaged</div>
-            </div>
-
-            <div class="status-card">
-              <div class="status-card-header">
-                <span class="status-card-label">RESEARCH INTEGRITY</span>
-                <span class="metric-indicator danger" id="metricDataLed">●</span>
-              </div>
-              <div class="status-card-value danger" id="metricData">14% (CORRUPTED)</div>
-              <div class="status-card-sub" id="metricDataSub">Quantum files ciphered</div>
-            </div>
-
-            <div class="status-card">
-              <div class="status-card-header">
-                <span class="status-card-label">REACTOR CORE STATUS</span>
-                <span class="metric-indicator danger" id="metricReactorLed">●</span>
-              </div>
-              <div class="status-card-value danger" id="metricReactor">0.0 GW (OFFLINE)</div>
-              <div class="status-card-sub" id="metricReactorSub">Zero-point flux collapsed</div>
-            </div>
-
-            <div class="status-card">
-              <div class="status-card-header">
-                <span class="status-card-label">SYSTEM ANOMALIES</span>
-                <span class="metric-indicator info" id="metricAnomalyLed">●</span>
-              </div>
-              <div class="status-card-value warning" id="metricAnomaly">SCAN REQUIRED</div>
-              <div class="status-card-sub" id="metricAnomalySub">Type 'scan' in terminal</div>
-            </div>
           </div>
         </article>
 
@@ -261,10 +245,10 @@
           <div class="panel-header terminal-header">
             <div class="terminal-dots">
               <span class="dot red"></span>
-              <span class="dot yellow"></span>
-              <span class="dot green"></span>
+              <span class="dot blue"></span>
+              <span class="dot purple"></span>
             </div>
-            <span class="panel-title terminal-title">LAB_OS // TTY-PRIMARY [BASH-V3.8]</span>
+            <span class="panel-title terminal-title">LAB TERMINAL</span>
             <button id="clearTermBtn" class="term-clear-btn" type="button" title="Clear screen">CLEAR</button>
           </div>
 
@@ -272,37 +256,13 @@
           <div id="terminalOutput" class="terminal-output" role="log" aria-live="polite">
             <!-- Initial boot log messages populated by script.js -->
           </div>
-
-          <!-- Command Input Row -->
-          <form id="terminalForm" class="terminal-form" autocomplete="off" action="#">
-            <label for="commandInput" class="term-prompt">
-              <span class="prompt-user">root@anomaly</span>:<span class="prompt-path">~/lab</span>#
-            </label>
-            <div class="input-wrapper">
-              <input 
-                type="text" 
-                id="commandInput" 
-                class="command-input" 
-                placeholder="type 'help' or 'scan' to begin..." 
-                spellcheck="false" 
-                autocomplete="off" 
-                autocorrect="off" 
-                autocapitalize="off"
-                aria-label="Terminal command input"
-              />
-              <span class="terminal-cursor" aria-hidden="true">█</span>
-            </div>
-            <button type="submit" id="submitCommandBtn" class="btn btn-submit" aria-label="Send command">
-              EXECUTE ↵
-            </button>
-          </form>
         </article>
 
         <!-- Command Help Reference Panel -->
         <article class="panel help-panel" aria-label="Command Help Reference">
           <div class="panel-header">
-            <span class="panel-title">OPERATING COMMAND DIRECTORY</span>
-            <span class="panel-subtext">Click any to auto-fill</span>
+            <span class="panel-title">COMMAND GUIDE</span>
+            <span class="panel-subtext">Click any command to auto-fill</span>
           </div>
           <div class="help-scroll-container">
             <table class="help-table">
@@ -315,43 +275,43 @@
               <tbody>
                 <tr class="quick-cmd-row" data-cmd="scan">
                   <td><code>scan</code></td>
-                  <td>Sweep laboratory sensors for corrupted nodes & clues</td>
+                  <td>Scan lab sensors to find anomalies and clues</td>
                 </tr>
                 <tr class="quick-cmd-row" data-cmd="inspect reactor">
                   <td><code>inspect reactor</code></td>
-                  <td>Analyze the clean-energy prototype containment unit</td>
+                  <td>Inspect the Energy Reactor puzzle</td>
                 </tr>
                 <tr class="quick-cmd-row" data-cmd="inspect server">
                   <td><code>inspect server</code></td>
-                  <td>Investigate the research data core encrypted storage</td>
+                  <td>Inspect the Research Server clue</td>
                 </tr>
                 <tr class="quick-cmd-row" data-cmd="inspect console">
                   <td><code>inspect console</code></td>
-                  <td>Examine the central security override control console</td>
+                  <td>Inspect the Control Console puzzle</td>
                 </tr>
                 <tr class="quick-cmd-row" data-cmd="solve reactor ">
                   <td><code>solve reactor [ans]</code></td>
-                  <td>Submit power equation calculation (e.g. <code>solve reactor 96</code>)</td>
+                  <td>Submit answer (e.g. <code>solve reactor 48</code>)</td>
                 </tr>
                 <tr class="quick-cmd-row" data-cmd="solve server ">
                   <td><code>solve server [ans]</code></td>
-                  <td>Submit cryptographic key phrase to unlock research files</td>
+                  <td>Submit decoded word (e.g. <code>solve server solar</code>)</td>
                 </tr>
                 <tr class="quick-cmd-row" data-cmd="solve console ">
                   <td><code>solve console [ans]</code></td>
-                  <td>Submit final authorization code to release lockdown</td>
+                  <td>Submit security code (e.g. <code>solve console qua</code>)</td>
                 </tr>
                 <tr class="quick-cmd-row" data-cmd="status">
                   <td><code>status</code></td>
-                  <td>Print comprehensive diagnostic readout in terminal</td>
+                  <td>Show mission progress and device status</td>
                 </tr>
                 <tr class="quick-cmd-row" data-cmd="help">
                   <td><code>help</code></td>
-                  <td>Print standard protocol instructions to terminal</td>
+                  <td>List all available commands</td>
                 </tr>
                 <tr class="quick-cmd-row" data-cmd="clear">
                   <td><code>clear</code></td>
-                  <td>Clear the terminal screen buffer</td>
+                  <td>Clear the terminal screen</td>
                 </tr>
               </tbody>
             </table>
@@ -361,6 +321,31 @@
       </section>
 
     </div>
+
+    <!-- BOTTOM FULL-WIDTH COMMAND BAR -->
+    <footer class="bottom-command-bar panel" aria-label="Command Execution Bar">
+      <form id="terminalForm" class="terminal-form" autocomplete="off" action="#">
+        <label for="commandInput" class="term-prompt">
+          <span class="prompt-user">root@lab</span>:<span class="prompt-path">~/system</span>$
+        </label>
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            id="commandInput" 
+            class="command-input" 
+            placeholder="Enter a command... (e.g. 'scan', 'help', or click a device)" 
+            spellcheck="false" 
+            autocomplete="off" 
+            autocorrect="off" 
+            autocapitalize="off"
+            aria-label="Terminal command input"
+          />
+        </div>
+        <button type="submit" id="submitCommandBtn" class="btn btn-submit" aria-label="Run command">
+          Run Command ↵
+        </button>
+      </form>
+    </footer>
   </main>
 
   <!-- =========================================================
